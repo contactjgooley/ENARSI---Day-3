@@ -1,0 +1,189 @@
+!
+! Last configuration change at 14:28:21 UTC Mon Oct 4 2021
+!
+version 15.9
+service timestamps debug datetime msec localtime show-timezone year
+service timestamps log datetime msec localtime show-timezone year
+no service password-encryption
+!
+hostname R1
+!
+boot-start-marker
+boot-end-marker
+!
+!
+logging buffered 1000000
+enable secret 9 $9$K51Dy7nab95xAf$AhY6CUFRqCaxuopsXI8u0JwbL2TH9gduwOK/RVfTKdc
+!
+no aaa new-model
+!
+!
+!
+mmi polling-interval 60
+no mmi auto-configure
+no mmi pvc
+mmi snmp-timeout 180
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+no ip domain lookup
+ip domain name cisco.com
+ip cef
+ipv6 unicast-routing
+ipv6 cef
+ipv6 multicast-routing
+!
+multilink bundle-name authenticated
+!
+!
+!
+crypto pki trustpoint TP-self-signed-4294967295
+ enrollment selfsigned
+ subject-name cn=IOS-Self-Signed-Certificate-4294967295
+ revocation-check none
+ rsakeypair TP-self-signed-4294967295
+!
+!
+crypto pki certificate chain TP-self-signed-4294967295
+ certificate self-signed 01
+  3082022B 30820194 A0030201 02020101 300D0609 2A864886 F70D0101 05050030 
+  31312F30 2D060355 04031326 494F532D 53656C66 2D536967 6E65642D 43657274 
+  69666963 6174652D 34323934 39363732 3935301E 170D3231 31303034 31343234 
+  32375A17 0D333030 31303130 30303030 305A3031 312F302D 06035504 03132649 
+  4F532D53 656C662D 5369676E 65642D43 65727469 66696361 74652D34 32393439 
+  36373239 3530819F 300D0609 2A864886 F70D0101 01050003 818D0030 81890281 
+  8100AFCB E9238356 08D470F5 ADE81ADE 64C17A4D 91F355C9 518C3967 88157708 
+  566C9B27 6B77567F 29A5482B 5FD4574C 9770F519 7A4EBEFF A2C2B3EB F24A3C1A 
+  FD676A9B D2B15356 18AF4D9C 12F0A223 FCACD617 0CDBCBCC 6AAF1BCF 7BD74B2B 
+  45B685B4 001947F4 4DD0B95A DD8A19FF A0D15084 049DCB9D 21371922 6BC9FFA8 
+  65570203 010001A3 53305130 0F060355 1D130101 FF040530 030101FF 301F0603 
+  551D2304 18301680 1476BA00 4153CC20 9BB5DC37 F765F2A7 40F9E51D 71301D06 
+  03551D0E 04160414 76BA0041 53CC209B B5DC37F7 65F2A740 F9E51D71 300D0609 
+  2A864886 F70D0101 05050003 8181000D ACBC9B09 DC4CD9F4 CA3B1EB3 026C1757 
+  FC9179EF 6E4D5ADF 7AB31166 E0169CC0 3CCF418B C5AFF0B4 4F7B4C96 777B8063 
+  FC77D98A 69CED49A 70389E34 ED4CF317 16FDB0D6 94DA3C11 1CB187AD DD82F501 
+  0750E215 4B488CB9 F51B38DC 9DE85D0F 0C09C759 1599CEA3 D7C21461 459F7317 
+  E45624D2 0B94205B 96E4D57F B79DFA
+        quit
+username user privilege 0 secret 9 $9$MSkF/EqYoCdUw9$MR1lw/YnpXPoO3K8A5Px7xtg3qYqOIOyxpkLfh7pkbc
+username cisco privilege 15 secret 9 $9$yvAqAWs.Q.O6bv$DBD4KKbJMRHe5EY7WMfPLh1kTX5kODyBDOENmJeT7nc
+!
+redundancy
+!
+!
+! 
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+interface Loopback0
+ ip address 1.1.1.1 255.255.255.255
+ ipv6 address 2001:DEAD:AF::1/128
+ ipv6 enable
+!
+interface GigabitEthernet0/0
+ ip address 10.1.12.1 255.255.255.0
+ duplex auto
+ speed auto
+ media-type rj45
+ ipv6 address 2001:DEAD:BEEF::1/64
+ ipv6 enable
+!
+interface GigabitEthernet0/1
+ ip address 10.1.13.1 255.255.255.0
+ duplex auto
+ speed auto
+ media-type rj45
+ ipv6 address 2001:DEAD:BEE::1/64
+!
+interface GigabitEthernet0/2
+ no ip address
+ shutdown
+ duplex auto
+ speed auto
+ media-type rj45
+!
+interface GigabitEthernet0/3
+ no ip address
+ shutdown
+ duplex auto
+ speed auto
+ media-type rj45
+!
+ip forward-protocol nd
+!
+!
+ip http server
+ip http secure-server
+ip http max-connections 2
+ip http session-idle-timeout 180 
+ip ssh version 2
+ip scp server enable
+!
+logging source-interface Loopback0
+ipv6 ioam timestamp
+!
+!
+access-list 100 deny   tcp host 10.1.12.2 host 10.1.12.1 eq telnet
+access-list 100 permit ip any any
+!
+control-plane
+!
+banner exec ^C
+**************************************************************************
+* IOSv is strictly limited to use for evaluation, demonstration and IOS  *
+* education. IOSv is provided as-is and is not supported by Cisco's      *
+* Technical Advisory Center. Any use or disclosure, in whole or in part, *
+* of the IOSv Software or Documentation to any third party for any       *
+* purposes is expressly prohibited except as otherwise authorized by     *
+* Cisco in writing.                                                      *
+**************************************************************************^C
+banner incoming ^C
+**************************************************************************
+* IOSv is strictly limited to use for evaluation, demonstration and IOS  *
+* education. IOSv is provided as-is and is not supported by Cisco's      *
+* Technical Advisory Center. Any use or disclosure, in whole or in part, *
+* of the IOSv Software or Documentation to any third party for any       *
+* purposes is expressly prohibited except as otherwise authorized by     *
+* Cisco in writing.                                                      *
+**************************************************************************^C
+banner login ^C
+**************************************************************************
+* IOSv is strictly limited to use for evaluation, demonstration and IOS  *
+* education. IOSv is provided as-is and is not supported by Cisco's      *
+* Technical Advisory Center. Any use or disclosure, in whole or in part, *
+* of the IOSv Software or Documentation to any third party for any       *
+* purposes is expressly prohibited except as otherwise authorized by     *
+* Cisco in writing.                                                      *
+**************************************************************************^C
+!
+line con 0
+ exec-timeout 0 0
+ logging synchronous
+line aux 0
+line vty 0 4
+ password cisco
+ logging synchronous
+ login local
+ transport input telnet ssh
+!
+no scheduler allocate
+!
+end
+

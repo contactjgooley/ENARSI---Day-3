@@ -1,0 +1,188 @@
+!
+! Last configuration change at 23:55:12 UTC Thu Sep 30 2021
+!
+version 15.9
+service timestamps debug datetime msec
+service timestamps log datetime msec
+no service password-encryption
+!
+hostname R4
+!
+boot-start-marker
+boot-end-marker
+!
+!
+!
+no aaa new-model
+!
+!
+!
+mmi polling-interval 60
+no mmi auto-configure
+no mmi pvc
+mmi snmp-timeout 180
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+no ip domain lookup
+ip cef
+ipv6 unicast-routing
+ipv6 cef
+!
+multilink bundle-name authenticated
+!
+!
+!
+!
+!
+redundancy
+!
+!
+ip telnet source-interface GigabitEthernet0/0
+! 
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+interface Loopback0
+ ip address 4.4.4.4 255.255.255.255
+ ipv6 address 2001:DEAD:AF::4/128
+ ipv6 eigrp 100
+ ospfv3 1 ipv6 area 0
+!
+interface GigabitEthernet0/0
+ ip address 10.1.34.4 255.255.255.0
+ duplex auto
+ speed auto
+ media-type rj45
+ ipv6 address 2001:DEAD:DEAD::4/64
+ ipv6 eigrp 100
+ ospfv3 1 ipv6 area 0
+ bfd interval 50 min_rx 50 multiplier 3
+!
+interface GigabitEthernet0/1
+ ip address 10.1.24.4 255.255.255.0
+ duplex auto
+ speed auto
+ media-type rj45
+ bfd interval 50 min_rx 50 multiplier 3
+!
+interface GigabitEthernet0/2
+ no ip address
+ shutdown
+ duplex auto
+ speed auto
+ media-type rj45
+!
+interface GigabitEthernet0/3
+ no ip address
+ shutdown
+ duplex auto
+ speed auto
+ media-type rj45
+!
+router ospfv3 1
+ !
+ address-family ipv6 unicast
+ exit-address-family
+!
+router bgp 65000
+ bgp log-neighbor-changes
+ neighbor 2001:DEAD:DEAD::3 remote-as 65000
+ !
+ address-family ipv4
+  no neighbor 2001:DEAD:DEAD::3 activate
+ exit-address-family
+ !
+ address-family ipv6
+  network 2001:DEAD:AF::4/128
+  network 2001:DEAD:DEAD::/64
+  neighbor 2001:DEAD:DEAD::3 activate
+ exit-address-family
+!
+ip forward-protocol nd
+!
+!
+no ip http server
+no ip http secure-server
+!
+ip sla 1
+ icmp-echo 10.1.34.3 source-interface GigabitEthernet0/0
+ frequency 15
+ip sla schedule 1 life forever start-time now
+ip sla 2
+ udp-jitter 10.1.34.3 65051 source-ip 10.1.34.4 num-packets 20
+ request-data-size 160
+ frequency 30
+ip sla schedule 2 life forever start-time now
+ipv6 router eigrp 100
+ eigrp router-id 4.4.4.4
+!
+ipv6 ioam timestamp
+!
+snmp-server group READONLY v3 priv read MIBACCESS access 99
+snmp-server view MIBACCESS sysUpTime included
+snmp-server view MIBACCESS ifAdminStatus included
+snmp-server view MIBACCESS ifOperStatus included
+snmp-server chassis-id 
+snmp-server host 100.100.100.100 version 3 priv NMSERVER  cpu
+!
+access-list 99 permit 100.100.100.100
+!
+control-plane
+!
+banner exec ^C
+**************************************************************************
+* IOSv is strictly limited to use for evaluation, demonstration and IOS  *
+* education. IOSv is provided as-is and is not supported by Cisco's      *
+* Technical Advisory Center. Any use or disclosure, in whole or in part, *
+* of the IOSv Software or Documentation to any third party for any       *
+* purposes is expressly prohibited except as otherwise authorized by     *
+* Cisco in writing.                                                      *
+**************************************************************************^C
+banner incoming ^C
+**************************************************************************
+* IOSv is strictly limited to use for evaluation, demonstration and IOS  *
+* education. IOSv is provided as-is and is not supported by Cisco's      *
+* Technical Advisory Center. Any use or disclosure, in whole or in part, *
+* of the IOSv Software or Documentation to any third party for any       *
+* purposes is expressly prohibited except as otherwise authorized by     *
+* Cisco in writing.                                                      *
+**************************************************************************^C
+banner login ^C
+**************************************************************************
+* IOSv is strictly limited to use for evaluation, demonstration and IOS  *
+* education. IOSv is provided as-is and is not supported by Cisco's      *
+* Technical Advisory Center. Any use or disclosure, in whole or in part, *
+* of the IOSv Software or Documentation to any third party for any       *
+* purposes is expressly prohibited except as otherwise authorized by     *
+* Cisco in writing.                                                      *
+**************************************************************************^C
+!
+line con 0
+ exec-timeout 0 0
+line aux 0
+line vty 0 4
+ login
+ transport input telnet ssh
+!
+no scheduler allocate
+!
+end
+
