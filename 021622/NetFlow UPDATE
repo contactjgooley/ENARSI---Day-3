@@ -1,0 +1,3 @@
+ip flow top-talkers worked as configured. Just needed to be more patient with the router for it to build the cache :)
+
+show ip flow top-talkers
